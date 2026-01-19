@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fleet Portal - Sign In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Left Panel - Hero Section */
+        .hero-panel {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .hero-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                to right,
+                rgba(0, 0, 0, 0.3) 0%,
+                rgba(0, 0, 0, 0.5) 100%
+            );
+            z-index: 1;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 500px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            font-weight: 300;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .hero-content h1 .brand {
+            font-weight: 700;
+            display: block;
+        }
+
+        .hero-content p {
+            font-size: 1.125rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-content p:last-of-type {
+            margin-top: 0.5rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        /* Right Panel - Auth Section */
+        .auth-panel {
+            width: 500px;
+            min-width: 500px;
+            background-color: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            color: #fff;
+        }
+
+        .theme-toggle svg {
+            width: 20px;
+            height: 20px;
+            display: block;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .auth-header h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .auth-header p {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Azure AD B2C API Container - This is where B2C injects content */
+        #api {
+            width: 100%;
+        }
+
+        /* Azure AD B2C Styling Overrides */
+        #api .intro,
+        #api .divider,
+        #api .heading {
+            display: none;
+        }
+
+        #api .localAccount,
+        #api .social {
+            margin-bottom: 16px;
+        }
+
+        /* Social/Identity Provider Buttons */
+        #api .options {
+            margin-bottom: 24px;
+        }
+
+        #api .options > div {
+            margin-bottom: 12px;
+        }
+
+        #api button.accountButton {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background-color: transparent;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        #api button.accountButton:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Microsoft Button Specific */
+        #api button.accountButton[aria-label*="Microsoft"],
+        #api button.accountButton[id*="Microsoft"] {
+            background-color: transparent;
+        }
+
+        #api button.accountButton::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Entry Fields */
+        #api .entry {
+            margin-bottom: 16px;
+        }
+
+        #api .entry-item {
+            margin-bottom: 16px;
+        }
+
+        #api label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 8px;
+        }
+
+        #api input[type="text"],
+        #api input[type="email"],
+        #api input[type="password"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        #api input[type="text"]:focus,
+        #api input[type="email"]:focus,
+        #api input[type="password"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        #api input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Buttons */
+        #api button[type="submit"],
+        #api .sendCode,
+        #api .verifyCode,
+        #api .sendNewCode,
+        #api .changeClaims,
+        #api #next,
+        #api #continue {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #fff;
+            color: #000;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        #api button[type="submit"]:hover,
+        #api .sendCode:hover,
+        #api .verifyCode:hover,
+        #api #next:hover,
+        #api #continue:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Secondary/Cancel Buttons */
+        #api .sendNewCode,
+        #api .changeClaims,
+        #api button.cancel {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        #api .sendNewCode:hover,
+        #api .changeClaims:hover,
+        #api button.cancel:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Links */
+        #api a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.2s ease;
+        }
+
+        #api a:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+
+        /* Forgot Password Link */
+        #api .forgotPassword {
+            text-align: right;
+            margin-top: 8px;
+            margin-bottom: 16px;
+        }
+
+        /* Create Account Link */
+        #api .create {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #api .create p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+
+        /* Error Messages */
+        #api .error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+        }
+
+        #api .error.itemLevel {
+            background-color: transparent;
+            border: none;
+            padding: 4px 0;
+            margin: 4px 0 0 0;
+            color: #f87171;
+            font-size: 0.8rem;
+        }
+
+        /* Success Messages */
+        #api .success {
+            background-color: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+        }
+
+        /* Help/Info Links */
+        #api .helpLink {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        /* Verification Panel */
+        #api .verificationInfoText,
+        #api .verificationSuccessText {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        #api .verificationErrorText {
+            color: #f87171;
+            font-size: 0.875rem;
+            margin-bottom: 16px;
+        }
+
+        /* Buttons Container */
+        #api .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        #api .buttons button {
+            flex: 1;
+        }
+
+        /* Page Level Error */
+        #api .pageLevel {
+            margin-bottom: 20px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-panel {
+                display: none;
+            }
+
+            .auth-panel {
+                width: 100%;
+                min-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .auth-panel {
+                padding: 40px 24px;
+            }
+
+            .auth-header h2 {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Loading State */
+        #api .working {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        #api .working::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Hide unnecessary B2C elements */
+        #api .claims-provider-list-buttons {
+            margin: 0;
+            padding: 0;
+        }
+
+        #api .divider {
+            display: none !important;
+        }
+
+        #api h2 {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Left Panel - Hero Section -->
+    <div class="hero-panel">
+        <!-- Replace with your actual background image -->
+        <img
+            src="https://images.unsplash.com/photo-1542621334-a254cf47733d?auto=format&fit=crop&w=1920&q=80"
+            alt="Forest workers"
+            class="hero-background"
+        >
+        <div class="hero-content">
+            <h1>
+                Welcome to
+                <span class="brand">Fleet Portal</span>
+            </h1>
+            <p>Your streamlined fleet management starts here.</p>
+            <p>Please log in to your account to access your workspace.</p>
+        </div>
+    </div>
+
+    <!-- Right Panel - Authentication -->
+    <div class="auth-panel">
+        <button class="theme-toggle" aria-label="Toggle theme">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+        </button>
+
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2>Welcome back</h2>
+                <p>Please log in with your Microsoft account</p>
+            </div>
+
+            <!-- Azure AD B2C API Container -->
+            <!-- IMPORTANT: This div is required for Azure AD B2C to inject its UI -->
+            <div id="api" role="main">
+                <!-- Azure AD B2C will inject authentication UI here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Optional: Theme toggle functionality
+        const themeToggle = document.querySelector('.theme-toggle');
+
+        themeToggle?.addEventListener('click', () => {
+            document.body.classList.toggle('light-theme');
+            // You can extend this to implement full light theme support
+        });
+
+        // Optional: Custom handling for B2C events
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for B2C to inject content
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.addedNodes.length) {
+                        // Add Microsoft logo to the button if needed
+                        const msButton = document.querySelector('#api button[aria-label*="Microsoft"], #api button[id*="Microsoft"]');
+                        if (msButton && !msButton.querySelector('.ms-logo')) {
+                            const logo = document.createElement('span');
+                            logo.className = 'ms-logo';
+                            logo.innerHTML = `
+                                <svg width="20" height="20" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+                                    <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+                                    <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+                                    <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+                                </svg>
+                            `;
+                            msButton.insertBefore(logo, msButton.firstChild);
+                        }
+                    }
+                });
+            });
+
+            const apiContainer = document.getElementById('api');
+            if (apiContainer) {
+                observer.observe(apiContainer, { childList: true, subtree: true });
+            }
+        });
+    </script>
+</body>
+</html>
