@@ -40,30 +40,6 @@
             margin: 24px;
         }
 
-        .theme-toggle {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 8px;
-            cursor: pointer;
-            color: rgba(255, 255, 255, 0.6);
-            transition: all 0.2s ease;
-        }
-
-        .theme-toggle:hover {
-            border-color: rgba(255, 255, 255, 0.4);
-            color: #fff;
-        }
-
-        .theme-toggle svg {
-            width: 20px;
-            height: 20px;
-            display: block;
-        }
-
         .auth-container {
             width: 100%;
         }
@@ -407,15 +383,9 @@
 <body>
     <!-- Centered Authentication Panel -->
     <div class="auth-panel">
-        <button class="theme-toggle" aria-label="Toggle theme">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
-        </button>
-
         <div class="auth-container">
             <div class="auth-header">
-                <img src="Fleet BCTable logo.png" alt="Fleet BCTable" class="logo">
+                <img src="Fleet%20BCTable%20logo.png" alt="Fleet BCTable" class="logo">
                 <h2>Sign in</h2>
                 <p>Sign in with your business email</p>
                 <p class="warning">Authorized access only</p>
@@ -429,45 +399,5 @@
         </div>
     </div>
 
-    <script>
-        // Optional: Theme toggle functionality
-        const themeToggle = document.querySelector('.theme-toggle');
-
-        themeToggle?.addEventListener('click', () => {
-            document.body.classList.toggle('light-theme');
-            // You can extend this to implement full light theme support
-        });
-
-        // Optional: Custom handling for B2C events
-        document.addEventListener('DOMContentLoaded', () => {
-            // Wait for B2C to inject content
-            const observer = new MutationObserver((mutations) => {
-                mutations.forEach((mutation) => {
-                    if (mutation.addedNodes.length) {
-                        // Add Microsoft logo to the button if needed
-                        const msButton = document.querySelector('#api button[aria-label*="Microsoft"], #api button[id*="Microsoft"]');
-                        if (msButton && !msButton.querySelector('.ms-logo')) {
-                            const logo = document.createElement('span');
-                            logo.className = 'ms-logo';
-                            logo.innerHTML = `
-                                <svg width="20" height="20" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
-                                    <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
-                                    <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
-                                    <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
-                                </svg>
-                            `;
-                            msButton.insertBefore(logo, msButton.firstChild);
-                        }
-                    }
-                });
-            });
-
-            const apiContainer = document.getElementById('api');
-            if (apiContainer) {
-                observer.observe(apiContainer, { childList: true, subtree: true });
-            }
-        });
-    </script>
 </body>
 </html>
